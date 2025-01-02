@@ -41,7 +41,7 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Lint Code Base
-        uses: github/super-linter@v3
+        uses: github/super-linter@v7
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
