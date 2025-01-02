@@ -19,10 +19,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.0
+        dotnet-version: 8.0.x
     - name: Restore dependencies
+      working-directory: ./DotNet.Pipeline
       run: dotnet restore
     - name: Build
+      working-directory: ./DotNet.Pipeline
       run: dotnet build --no-restore
     - name: Test
+      working-directory: ./DotNet.Pipeline
       run: dotnet test --no-build --verbosity normal
