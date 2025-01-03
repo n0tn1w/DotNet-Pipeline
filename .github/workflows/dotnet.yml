@@ -35,6 +35,9 @@ jobs:
     name: Lint Code Base
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -46,5 +49,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          FILTER_REGEX_INCLUDE: '\.(cs)$'
+          FILTER_REGEX_INCLUDE: '\.(cs|csproj|sln)$'
           FILTER_REGEX_EXCLUDE: '.*'
