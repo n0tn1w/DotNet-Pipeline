@@ -46,5 +46,5 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-          FILTER_REGEX_INCLUDE: '\.(cs|vb|csproj|sln|config)$'
+          FILTER_REGEX_INCLUDE: '\.(cs)$'
           FILTER_REGEX_EXCLUDE: '.*'
