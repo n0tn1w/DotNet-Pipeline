@@ -1,3 +1,4 @@
+
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
@@ -9,8 +10,11 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  Build:
 
     runs-on: ubuntu-latest
 
@@ -21,8 +25,58 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
+      working-directory: ./DotNet.Pipeline
       run: dotnet restore
     - name: Build
+      working-directory: ./DotNet.Pipeline
       run: dotnet build --no-restore
     - name: Test
+      working-directory: ./DotNet.Pipeline
       run: dotnet test --no-build --verbosity normal
+
+
+  Lint:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Lint Code Base
+        uses: github/super-linter@v7
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          FILTER_REGEX_INCLUDE: '\.(cs|csproj|sln)$'
+          FILTER_REGEX_EXCLUDE: '.*'
+
+  Snyk:
+    name: Snyk Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    - name: Restore dependencies
+      working-directory: ./DotNet.Pipeline
+      run: dotnet restore
+    - name: Install Snyk CLI
+      run: npm install -g snyk
+    - name: Authenticate Snyk CLI
+      working-directory: ./DotNet.Pipeline
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk auth $SNYK_TOKEN
+    - name: Snyk vulnerability test
+      working-directory: ./DotNet.Pipeline
+      run: snyk test --all-projects --severity-threshold=high
