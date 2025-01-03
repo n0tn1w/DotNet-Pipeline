@@ -1,3 +1,4 @@
+
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
@@ -54,3 +55,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           FILTER_REGEX_INCLUDE: '\.(cs|csproj|sln)$'
           FILTER_REGEX_EXCLUDE: '.*'
+
+  Snyk:
+    name: Snyk Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Install Snyk CLI
+      run: npm install -g snyk
+    - name: Authenticate Snyk CLI
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      run: snyk auth $SNYK_TOKEN
+    - name: Snyk vulnerability test
+      run: snyk test --all-projects --severity-threshold=high
