@@ -127,6 +127,7 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"n0tn1w_DotNet-Pipeline" /o:"n0tn1w" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
       - name: Build Project
+        working-directory: ./DotNet.Pipeline
         run: dotnet build
 
       - name: SonarCloud End Analysis
