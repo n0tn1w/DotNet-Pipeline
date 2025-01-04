@@ -14,8 +14,32 @@ permissions:
   contents: read
 
 jobs:
-  Build:
 
+  SecretsScan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Install TruffleHog
+        run: pip install trufflehog
+      - name: Scan for Secrets
+        run: trufflehog filesystem --no-update --directory . --regex --entropy=True
+
+  Format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Format
+      run: dotnet format --verify-no-changes --verbosity diagnostic
+    
+  Build:
     runs-on: ubuntu-latest
 
     steps:
