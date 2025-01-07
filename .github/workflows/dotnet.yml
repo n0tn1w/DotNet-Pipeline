@@ -167,3 +167,24 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"n0tn1w_DotNet-Pipeline" /o:"n0tn1w" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+    
+  Docker:
+    name: Build and Push Docker Compose Services
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and Push with Docker Compose
+      run: |
+        export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+        export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
+        docker compose build
+        docker compose push
