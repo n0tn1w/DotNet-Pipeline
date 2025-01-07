@@ -187,5 +187,5 @@ jobs:
       run: |
         export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-        docker compose build
-        docker compose push
+        docker-compose build
+        docker-compose push
