@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      image: n0tn1w/dotnet-pipeline:latest
+    image: n0tn1w/dotnet-pipeline:latest
     ports:
       - "5099:5099" 
     environment:
