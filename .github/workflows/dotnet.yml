@@ -183,6 +183,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build and Push with Docker Compose
+      working-directory: ./DotNet.Pipeline/ShipDataManagement
       run: |
         export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
