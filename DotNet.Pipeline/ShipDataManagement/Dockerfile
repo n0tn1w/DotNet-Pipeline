@@ -19,6 +19,8 @@ WORKDIR /app
 # Copy the published output from the build stage
 COPY --from=build /app/out .
 
+EXPOSE 5099
+
 ENV ASPNETCORE_URLS=http://+:5099
 
 # Set the entry point for the container
