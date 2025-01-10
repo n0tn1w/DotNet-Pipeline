@@ -16,12 +16,6 @@ resource "azurerm_container_registry" "acr" {
   admin_enabled       = true
 }
 
-resource "random_string" "acr_suffix" {
-  length  = 5
-  special = false
-  upper   = false
-}
-
 resource "azurerm_app_service_plan" "plan" {
   name                = "net-n0tn1w-app-ship-plan-terra"
   location            = azurerm_resource_group.arg.location
@@ -32,6 +26,18 @@ resource "azurerm_app_service_plan" "plan" {
   sku {
     tier = "Basic"
     size = "B1"
+  }
+}
+
+resource "azurerm_storage_account" "asa" {
+  name                     = "tfstatefileterra"
+  resource_group_name      = azurerm_resource_group.arg.name
+  location                 = azurerm_resource_group.arg.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+
+  tags = {
+    environment = "dev"
   }
 }
 
@@ -59,5 +65,4 @@ resource "azurerm_app_service" "app" {
 
 output "web_app_ip" {
   value = azurerm_app_service.app.default_site_hostname
-  description = "The default hostname of the web app. Use this to access the web app."
 }
