@@ -170,27 +170,84 @@ jobs:
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
     
-  DockerHub:
-    name: Push to Docker Hub
+  DockerBuild:
+    name: Build Docker Image
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Build and Push with Docker Compose
-      working-directory: ./DotNet.Pipeline/ShipDataManagement
-      run: |
-        export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-        export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-        docker build -t $DOCKER_USERNAME/dotnet-pipeline:latest .
-        docker push $DOCKER_USERNAME/dotnet-pipeline:latest
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker Image
+        run: |
+          docker build -t dotnet-pipeline:latest ./DotNet.Pipeline/ShipDataManagement
+          docker save dotnet-pipeline:latest -o dotnet-pipeline.tar
+
+      - name: Upload Docker Image Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: dotnet-pipeline.tar
+
+  DockerScanTrivy:
+    name: Scan Docker Image with Trivy
+    runs-on: ubuntu-latest
+    needs: DockerBuild
+    steps:
+      - name: Download Docker Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker Image
+        run: |
+          docker load -i dotnet-pipeline.tar
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+
+      - name: Scan Docker Image
+        run: |
+          trivy image dotnet-pipeline:latest
+
+  DockerDeploy:
+    name: Push Docker Image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: DockerScanTrivy
+    steps:
+      - name: Download Docker Image Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+
+      - name: Load Docker Image
+        run: |
+          docker load -i dotnet-pipeline.tar
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Tag and Push Docker Image
+        run: |
+          docker tag dotnet-pipeline:latest ${{ secrets.DOCKER_USERNAME }}/dotnet-pipeline:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/dotnet-pipeline:latest
           
   Terraform:
     name: Deploy on Azure using Terraform
