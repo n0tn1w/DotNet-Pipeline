@@ -168,8 +168,8 @@ jobs:
           dotnet build
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
     
-  Docker:
-    name: Build and Push Docker Compose Services
+  DockerHub:
+    name: Push to Docker Hub
     runs-on: ubuntu-latest
 
     steps:
@@ -189,3 +189,27 @@ jobs:
         export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
         docker compose build
         docker compose push
+        
+  Terraform:
+    name: Deploy on Azure using Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_wrapper: false
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Download Terraform Plan
+      uses: actions/download-artifact@v4
+      with:
+        name: tfplan
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
