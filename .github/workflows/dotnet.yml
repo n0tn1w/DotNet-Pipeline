@@ -134,8 +134,7 @@ jobs:
      - name: SonarScanner  
        uses: highbyte/sonarscan-dotnet@v2.4.1
        with:
-          # The key of the SonarQube project
-          sonarProjectKey: DotNet-Pipeline
+          sonarProjectKey: DotNet-Pipeline-N0tn1w-Tokens
           sonarProjectName:  n0tn1w_DotNet-Pipeline
           sonarOrganization: n0tn1w|
        env:
