@@ -48,7 +48,7 @@ public class DbOperations(IConfiguration configuration, ILogger<DbOperations> lo
         {
             first.Carthage++;
         }
-        else 
+        else
         {
             first.Rome++;
         }
@@ -64,9 +64,9 @@ public class DbOperations(IConfiguration configuration, ILogger<DbOperations> lo
 
                 using (NpgsqlCommand command = new NpgsqlCommand(sql, connection))
                 {
-                    command.Parameters.Add(new NpgsqlParameter("id", NpgsqlDbType.Integer) { Value = first.Id});
-                    command.Parameters.Add(new NpgsqlParameter("r", NpgsqlDbType.Integer) { Value = first.Rome});
-                    command.Parameters.Add(new NpgsqlParameter("b", NpgsqlDbType.Integer) { Value = first.Carthage});
+                    command.Parameters.Add(new NpgsqlParameter("id", NpgsqlDbType.Integer) { Value = first.Id });
+                    command.Parameters.Add(new NpgsqlParameter("r", NpgsqlDbType.Integer) { Value = first.Rome });
+                    command.Parameters.Add(new NpgsqlParameter("b", NpgsqlDbType.Integer) { Value = first.Carthage });
 
                     result = await command.ExecuteNonQueryAsync();
                 }

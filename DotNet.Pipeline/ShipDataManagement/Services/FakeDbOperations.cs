@@ -24,7 +24,7 @@ public class FakeDbOperations(IConfiguration configuration, ILogger<FakeDbOperat
         {
             intMemoryCarthage++;
         }
-        else 
+        else
         {
             inMemoryRome++;
         }
