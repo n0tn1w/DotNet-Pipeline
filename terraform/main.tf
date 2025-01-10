@@ -18,7 +18,7 @@ resource "azurerm_resource_group" "arg" {
  }
 
 resource "azurerm_container_registry" "acr" {
-  name                = "dotnetshipterra"
+  name                = "dotnetshipterra2"
   resource_group_name = azurerm_resource_group.arg.name
   location            = azurerm_resource_group.arg.location
   sku                 = "Basic"
@@ -26,7 +26,7 @@ resource "azurerm_container_registry" "acr" {
 }
 
 resource "azurerm_app_service_plan" "plan" {
-  name                = "net-n0tn1w-app-ship-plan-terra"
+  name                = "net-n0tn1w-app-ship-plan-terra2"
   location            = azurerm_resource_group.arg.location
   resource_group_name = azurerm_resource_group.arg.name
   kind                = "Linux"
@@ -39,7 +39,7 @@ resource "azurerm_app_service_plan" "plan" {
 }
 
 resource "azurerm_storage_account" "asa" {
-  name                     = "storagedevterraa"
+  name                     = "storagedevterraa2"
   resource_group_name      = azurerm_resource_group.arg.name
   location                 = azurerm_resource_group.arg.location
   account_tier             = "Standard"
@@ -51,7 +51,7 @@ resource "azurerm_storage_account" "asa" {
 }
 
 resource "azurerm_app_service" "app" {
-  name                = "dotnet-ship-terra"
+  name                = "dotnet-ship-terra2"
   location            = azurerm_resource_group.arg.location
   resource_group_name = azurerm_resource_group.arg.name
   app_service_plan_id = azurerm_app_service_plan.plan.id
