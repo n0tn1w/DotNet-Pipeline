@@ -5,10 +5,8 @@
 name: CI
 
 on:
-  # push:
-  #   branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches: [ "*" ]
 
 permissions:
   contents: read
