@@ -189,9 +189,9 @@ jobs:
       run: |
         export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-        docker build
-        docker push
-        
+        docker build -t $DOCKER_USERNAME/dotnet-pipeline:latest .
+        docker push $DOCKER_USERNAME/dotnet-pipeline:latest
+          
   Terraform:
     name: Deploy on Azure using Terraform
     runs-on: ubuntu-latest
