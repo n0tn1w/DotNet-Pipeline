@@ -8,7 +8,6 @@ A DotNET Core 8 RESTful API with 2 endpoints.
     
     - management/stats POST - For adding a fan to either Rome and Catherge 
 
-
 ## Technologies
 
  - **.NET Core 8**: [https://dotnet.microsoft.com/en-us/download/dotnet/8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
