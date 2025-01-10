@@ -2,13 +2,11 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: CI
 
 on:
-  # push:
-  #   branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches: [ "*" ]
 
 permissions:
   contents: read
@@ -42,7 +40,7 @@ jobs:
   Build:
     name: Build the Project
     runs-on: ubuntu-latest
-
+    needs: [SecretsScan, Format, Lint]
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -104,7 +102,7 @@ jobs:
   Snyk:
     name: Snyk Vulnerability Scan
     runs-on: ubuntu-latest
-
+    needs: [Test]
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -129,6 +127,7 @@ jobs:
   SonarQube:
     name: Sonar Scan
     runs-on: windows-latest
+    needs: [Test]
     
     steps:
       - name: Set up JDK 17
@@ -169,6 +168,7 @@ jobs:
   DockerBuild:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    needs: [SonarQube, Snyk]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
