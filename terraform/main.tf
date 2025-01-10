@@ -3,6 +3,15 @@ provider "azurerm" {
   features {}
 }
 
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "maingroup-terra"
+    storage_account_name  = "storagedevterra"
+    container_name        = "tfstatefile"
+    key                   = "dev.terraform.tfstate"
+  }
+}
+
 resource "azurerm_resource_group" "arg" {
   name     = "maingroup-terra"
   location = "West Europe"
@@ -30,7 +39,7 @@ resource "azurerm_app_service_plan" "plan" {
 }
 
 resource "azurerm_storage_account" "asa" {
-  name                     = "tfstatefileterra"
+  name                     = "storagedevterraa"
   resource_group_name      = azurerm_resource_group.arg.name
   location                 = azurerm_resource_group.arg.location
   account_tier             = "Standard"
