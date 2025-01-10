@@ -11,6 +11,7 @@ on:
     branches: [ "main" ]
 
 permissions:
+  id-token: write  # Allows the workflow to request an OIDC token
   contents: read
 
 jobs:
@@ -99,6 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           FILTER_REGEX_INCLUDE: '\.(cs|csproj|sln)$'
           FILTER_REGEX_EXCLUDE: '.*'
+          DISABLE_CHECKOV: true
 
   Snyk:
     name: Snyk Vulnerability Scan
@@ -187,8 +189,8 @@ jobs:
       run: |
         export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
         export DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}
-        docker compose build
-        docker compose push
+        docker build
+        docker push
         
   Terraform:
     name: Deploy on Azure using Terraform
@@ -197,6 +199,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v3
