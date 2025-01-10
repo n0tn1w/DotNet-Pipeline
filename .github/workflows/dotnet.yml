@@ -136,7 +136,7 @@ jobs:
        with:
           sonarProjectKey: DotNet-Pipeline-N0tn1w-Tokens
           sonarProjectName:  n0tn1w_DotNet-Pipeline
-          sonarOrganization: n0tn1w|
+          sonarOrganization: n0tn1w
        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
