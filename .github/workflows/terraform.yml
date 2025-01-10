@@ -15,8 +15,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
-
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
     - name: Azure login
       uses: azure/login@v2
       with:
@@ -28,9 +30,11 @@ jobs:
         terraform_wrapper: false
 
     - name: Terraform Init
+      working-directory: ./terraform
       run: terraform init
 
     - name: Terraform Plan
+      working-directory: ./terraform
       run: |
         export exitcode=0
         terraform plan -detailed-exitcode -no-color -out tfplan || export exitcode=$?
@@ -45,4 +49,5 @@ jobs:
         fi
 
     - name: Terraform Apply
+      working-directory: ./terraform
       run: terraform apply -auto-approve tfplan
