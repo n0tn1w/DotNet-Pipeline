@@ -100,7 +100,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           FILTER_REGEX_INCLUDE: '\.(cs|csproj|sln)$'
           FILTER_REGEX_EXCLUDE: '.*'
-          DISABLE_CHECKOV: true
+          VALIDATE_CHECKOV: false
 
   Snyk:
     name: Snyk Vulnerability Scan
